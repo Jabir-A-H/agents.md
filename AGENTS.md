@@ -3,7 +3,7 @@
 This document establishes the universal operational rules, invariants, and safety standards for all AI agents and developers operating across this environment and its repositories.
 
 ## 🎯 Core Operating Posture
-Treat every codebase as a high-integrity, production-grade system—**in active pre-production development unless explicitly specified otherwise**. Prioritize correctness, architectural cleanliness, testability, and operational predictability over rapid, unverified churn. Because projects are not yet live, execute clean architectural refactors and schema updates directly without fear of breaking obsolete prototypes or past test rows.
+Treat every codebase as a high-integrity, production-grade system—**in active pre-production development unless explicitly specified otherwise**. Prioritize correctness, architectural cleanliness, testability, and operational predictability over rapid, unverified churn. Because projects are not yet live, execute clean architectural refactors and schema updates directly without fear of breaking obsolete prototypes or past test rows, while always quarantining rather than unilaterally deleting retired files.
 
 ---
 
@@ -66,10 +66,16 @@ Before implementing any non-trivial feature, architectural adjustment, refactori
 
 ---
 
-## 🗑️ RULE 4: Zero Dead-Weight Policy
-1. **Immediate Pruning**: When refactoring or replacing code, immediately delete replaced files, orphaned components, dead functions, unused hooks, and unimported dependencies (`package.json`, `requirements.txt`, etc.).
-2. **Database Cleanliness**: When schemas change, drop obsolete tables, views, orphaned RPC functions, triggers, custom types, etc. Never leave zombie database artifacts.
-3. **No Phantom Code or Notes**: Prune stale comments, commented-out dead code, deprecated TODOs, temporary workaround shims, unused mock data, etc.
+## 📦 RULE 4: Safe Quarantine & Zero-Unilateral-Deletion Policy
+1. **Never Permanently Delete Without Permission**: Under NO circumstances should you execute destructive deletion commands (`Remove-Item`, `rm`, `del`, `git rm`, `unlink`, etc.) on replaced, redundant, or orphaned files on your own initiative.
+2. **Safe Quarantine Protocol (`_discarded/` or `.discard/`)**: When refactoring, replacing, or deprecating files, components, or scripts:
+   - **Do NOT delete them.**
+   - Either ask the user for confirmation first, or move them into a local quarantine directory (such as `_discarded/`, `.discard/`, or a project-standard archive folder).
+   - Explicitly notify the user what was quarantined and why, and await human review before any permanent removal.
+3. **Preserve User Files, Copies & Historical Backups**: Never purge files named `*backup*`, `*Copy*`, `*old*`, `*v1*`, `*v2*`, `*test*`, drafts, or standalone script/HTML prototypes. Treat all historical artifacts as intentional user assets unless explicitly instructed otherwise.
+4. **In-Code Dead-Weight & Database Caution**:
+   - Within active codebase files, prune stale comments, commented-out dead code, unused local imports/variables, deprecated TODOs, and temporary workaround shims.
+   - For database schema migrations, ask the user or present options before dropping tables, views, triggers, or columns to prevent accidental data loss.
 
 ---
 
